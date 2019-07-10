@@ -92,12 +92,77 @@ end
 
 ##### `input.inp`
 
-Given the following anotations
+Given the following annotations
 
 ```
+# inside file_input.inp
 @hyperparam n_loop = 100:100:500
 @hyperparam n_stride = [2,3,4] 
 irrelevant_variable = 27
+```
+
+
+
+```
+# inside file_input.inp
+hyperparams = []
+@hyperparam n_loop = 100:100:500
+@hyperparam n_stride = [2,3,4] 
+irrelevant_variable = 27
+
+```
+
+
+
+```
+# inside file_input.inp
+hyperparams = []
+
+n_loop = 100:100:500
+n_stride = [2,3,4] 
+irrelevant_variable = 27
+
+```
+
+
+
+```
+julia> aux = Meta.parse(" add_hyperparameter(hyperparams, exp)")
+
+```
+
+
+
+
+
+```
+s = " add_hyperparameter(hyperparams, a = 1:10)"
+hyperparams = []
+
+function add_hyperparameter(hyperparams, exp:Expr)
+	push!(hyperparams, 1:10 )
+end
+
+```
+
+
+
+
+
+
+
+
+
+```
+f_IN      = open("file_input.inp","r");
+file_as_string = read(f_IN, String);
+close(f_IN)
+array_of_strings = split(file_as_string,"\n")
+
+for i in 1:size(array_of_strings,1)
+    eval(Meta.parse(array_of_strings[i]))        
+end;
+    
 ```
 
 

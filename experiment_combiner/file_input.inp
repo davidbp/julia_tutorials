@@ -1,0 +1,4 @@
+# inside file_input.inp
+@hyperparam n_loop = 100:100:500
+@hyperparam n_stride = [2,3,4] 
+irrelevant_variable = 27
