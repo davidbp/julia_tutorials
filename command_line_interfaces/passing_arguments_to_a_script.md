@@ -4,7 +4,7 @@ In Julia you can pass arguments to a script. All arguments (separated by an empt
 
 
 
-#### Example 01_test_ARGS.jl
+##### Example 01_test_ARGS.jl
 
 This example shows how we can pass arguments to a julia script
 
@@ -98,30 +98,4 @@ main()
 
 
 
-
-
-```using ArgParse
-
-
-using Argparse
-
-function parse_commandline()
-    s = ArgParseSettings()
-
-    @add_arg_table s begin
-        "--flag", "-f"
-            help = "Set radius for the cylinder"
-            arg_type = ArgParse.parse_item(Bool)
-    end
-
-    return parse_args(s)
-end
-
-function main()
-    parsed_args = parse_commandline()
-    println("flag value ", parsed_args["flag"])
-end
-
-main()
-```
 
