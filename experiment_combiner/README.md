@@ -69,6 +69,53 @@ res=2500
 
 
 
+### Using regular expressions
+
+```
+n_loop   = 2
+n_stride = 2
+irrelevant_variable = 27
+```
+
+
+
+```
+f_IN      = open("file_input.inp","r");
+file_as_string = read(f_IN, String);
+close(f_IN)
+
+hyperparam_dict = Dict(:n_loop => [100,200,300], :n_stride => [2,3])
+all_combinations = [x for x in Iterators.product(values(hyperparam_dict)...)]
+
+hyperparams = keys(hyperparam_dict)
+
+configurations = []
+for  combination in all_combinations
+    new_exp = deepcopy(file_as_string)
+    for (param,value) in zip(hyperparams, combination)  
+	      println(Regex("$param.*=.*") )
+			  replace(new_exp, Regex("$param.*=.*") => "param = $value")
+		end
+		push!(configurations, new_exp)
+end
+```
+
+
+
+Notice that `r"$param"` is not  `r"n_loop"` . In order to interpolate a variable inside a string in a  regular expression you need to call `Regex` . Therefore `Regex("$param")`   is `r"n_loop"`. 
+
+
+
+```
+r"$param\s*=\s*\d*"
+r"$param\s*=\s*\d*"
+
+```
+
+
+
+
+
 ### Tagging `input.inp`
 
 Once the user specifies a set of possible values ()
@@ -103,6 +150,14 @@ irrelevant_variable = 27
 
 
 
+
+
+
+
+
+
+
+
 ```
 # inside file_input.inp
 hyperparams = []
@@ -111,6 +166,12 @@ hyperparams = []
 irrelevant_variable = 27
 
 ```
+
+
+
+
+
+
 
 
 
