@@ -25,7 +25,6 @@ Let us assume the following problem:
 
 - For each combination of `n_loop` and `n_stride`  we want to execute `main.jl` and generate a file containing the results in  `result.out`.
 
-  
 
 ##### `input.inp`
 
@@ -67,50 +66,30 @@ res=2500
 
 
 
+###### Generate combinations of input files
 
-
-### Using regular expressions
-
-```
-n_loop   = 2
-n_stride = 2
-irrelevant_variable = 27
-```
-
-
+Let us open the input file and define the number of hyperparameters we want to test
 
 ```
-f_IN      = open("file_input.inp","r");
-file_as_string = read(f_IN, String);
-close(f_IN)
+file_input      = open("file_input.inp","r");
+file_as_string = read(file_input, String);
+close(file_input)
 
+# Define space to explore
 hyperparam_dict = Dict(:n_loop => [100,200,300], :n_stride => [2,3])
-all_combinations = [x for x in Iterators.product(values(hyperparam_dict)...)]
-
-hyperparams = keys(hyperparam_dict)
-
-configurations = []
-for  combination in all_combinations
-    new_exp = deepcopy(file_as_string)
-    for (param,value) in zip(hyperparams, combination)  
-	      println(Regex("$param.*=.*") )
-			  replace(new_exp, Regex("$param.*=.*") => "param = $value")
-		end
-		push!(configurations, new_exp)
-end
 ```
 
 
 
-Notice that `r"$param"` is not  `r"n_loop"` . In order to interpolate a variable inside a string in a  regular expression you need to call `Regex` . Therefore `Regex("$param")`   is `r"n_loop"`. 
 
 
 
-```
-r"$param\s*=\s*\d*"
-r"$param\s*=\s*\d*"
 
-```
+ 
+
+
+
+
 
 
 
@@ -307,36 +286,6 @@ all_combinations = [x for x in Iterators.product(hyperparam_values...)]
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ```
 s1 ="a = 213 # this is a line"
 s2 ="@add_hyperparam 1:10; a = 213 # this is a line"
@@ -369,4 +318,8 @@ julia> Meta.parse(s2).args[2]
 julia> Meta.parse(s2).args[3]
 :(1:10)
 ```
+
+
+
+
 
