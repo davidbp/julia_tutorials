@@ -1,0 +1,10 @@
+julia 0.6
+Gadfly
+DataFrames
+ForwardDiff
+Distributions
+PyCall
+PyPlot
+DataStructures
+Distances
+Clustering
