@@ -1,0 +1,4 @@
+# inside file_input.inp
+n_loop = 300 
+n_stride = 2 
+irrelevant_variable = 27
