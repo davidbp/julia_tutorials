@@ -1,15 +1,6 @@
-using Clustering
+using Base.Threads
 using BenchmarkTools
 using Distances
-
-function euclidean_mat(y, X, j) where T
-    res = zero(eltype(y))
-    @inbounds @fastmath @simd for k in eachindex(y)
-        partial = X[k, j] - y[k]
-        res += partial * partial
-    end
-    return res
-end
 
 function get_cluster_assignments(
     X::Matrix{T}, 
@@ -35,20 +26,17 @@ function get_cluster_assignments(
     return nothing
 end
 
-function transform(X, R::KmeansResult)
-    #cluster_assignments = findmin(pairwise(X, R.centers), dims=2)
-    cluster_assignments = [x[2] for x in findmin(pairwise(SqEuclidean(), X, R.centers), dims=2)[2]]
+function main()
 
-    return cluster_assignments
+    n_features = 128
+    n_examples = 1000_000
+    n_clusters = 256
+    
+    X = rand(Float32, n_features, n_examples)
+    centers = rand(Float32, n_features, n_clusters)    
+    println("\nExecution with $(nthreads()) threads\n")
+        
+    display(@benchmark get_cluster_assignments($X, $centers))
 end
 
-n_features = 128
-n_examples = 1_000_000
-n_clusters = 20
-
-X = rand(Float32, n_features, n_examples)
-R = kmeans(X, n_clusters ; maxiter=3)
-
-display(@benchmark transform(X, R))
-display(@benchmark get_cluster_assignments(X, R.centers))
-
+main()

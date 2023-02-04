@@ -25,7 +25,7 @@ function transform!(X::Matrix{F}, centers::Matrix{F}, cluster_assignments::Vecto
     nothing
 end
 
-function norm_sqr(x::AbstractVector{T},y::AbstractVector{T}) where {T}
+@inline function norm_sqr(x::AbstractVector{T},y::AbstractVector{T}) where {T}
     dist = zero(T)
     @simd for i in eachindex(x,y)
         @inbounds dist += (x[i] - y[i])^2
@@ -72,9 +72,8 @@ function main()
     transform3!(norm_sqr, X, centers, assignments1)
     println(assignments0 == assignments1)
     
-    @btime transform3!($norm_sqr,$X, $centers, $assignments1)
-    @btime transform!($X, $centers, $assignments0)
-
+    display(@benchmark transform3!($norm_sqr,$X, $centers, $assignments1))
+    display(@benchmark transform!($X, $centers, $assignments0))
 end
 
 main()

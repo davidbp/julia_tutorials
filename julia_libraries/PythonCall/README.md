@@ -37,6 +37,8 @@ CONDA_SUBDIR=osx-arm64  conda create -n env_arm64 python=3.9
 conda activate env_arm64
 python -c "import platform;print(platform.machine())"
 conda env config vars set CONDA_SUBDIR=arm64
+conda deactivate
+conda activate env_arm64
 ```
 This should print `arm64`
 

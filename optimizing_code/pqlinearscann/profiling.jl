@@ -1,14 +1,12 @@
 using HDF5
 using BenchmarkTools
 using Distances
-using LoopVectorization
-using SIMD
 using Clustering
 using ProgressMeter
-using StaticArrays
 using DataFrames
 using Plots
 using NPZ
+using JET
 
 function encode_shared(dist, vector::Array{T}, shared_prototypes::Array{T}) where T
     n_clusters = length(shared_prototypes)
@@ -268,7 +266,8 @@ end
 
 
 println("Reading dataset...")
-path = joinpath(homedir(), "TFM", "ann-benchmarks",  "sift-128-euclidean.hdf5")
+#path = joinpath(homedir(), "TFM", "ann-benchmarks",  "sift-128-euclidean.hdf5")
+path = joinpath(homedir(), "Datasets", "SIFT1M",  "sift-128-euclidean.hdf5")
 f = h5open(path, "r")
 X_tr_vecs = read(f["train"])
 X_te_vecs = read(f["test"]);
@@ -279,7 +278,9 @@ n_features, n_examples = size(X_tr_vecs)
 
 
 println("Fitting PQcodes...")
-path_prot = joinpath(homedir(), "TFM", "julia_tutorials","optimizing_code","pqlinearscann","1dkmeans_prototypes","1dkmeans_shared_prototypes_SIFT1M.npy")
+#path_prot = joinpath(homedir(), "TFM", "julia_tutorials","optimizing_code","pqlinearscann","1dkmeans_prototypes","1dkmeans_shared_prototypes_SIFT1M.npy")
+path_prot = joinpath(pwd(), "1dkmeans_prototypes", "1dkmeans_shared_prototypes_SIFT1M.npy")
+
 P_shared = vec(Float32.(npzread(path_prot)))
 
 PQcodes_shared = Array{Int8}(undef, n_features, n_examples);
@@ -291,6 +292,7 @@ println("Creating cells...")
 n_cells = 100
 clustering_function = kmeans
 centroids, cells, indexes  = ivf_indexer(X_tr_vecs, PQcodes_shared, n_cells, clustering_function)
+println(@report_opt ivf_indexer(X_tr_vecs, PQcodes_shared, n_cells, clustering_function))
 
 println("Applying IVF search...")
 query_id = 1
@@ -302,4 +304,5 @@ refinement = true
 extra_factor = 10
 fine_quant_funct = linear_scann_shared_l1
 
-@profview ivf_search(query, X_tr_vecs, centroids, cells, indexes, dist, nprobe, PQcodes_shared, P_shared, fine_quant_funct, top_k, extra_factor, refinement)
+#@profview ivf_search(query, X_tr_vecs, centroids, cells, indexes, dist, nprobe, PQcodes_shared, P_shared, fine_quant_funct, top_k, extra_factor, refinement)
+println(@report_opt ivf_search(query, X_tr_vecs, centroids, cells, indexes, dist, nprobe, PQcodes_shared, P_shared, fine_quant_funct, top_k, extra_factor, refinement))
