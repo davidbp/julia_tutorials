@@ -1,7 +1,7 @@
 
 using BenchmarkTools, InlineStrings, JSON, Random
 
-n_list = 10_000_000
+n_list = 50_000_000
 n_blocklist = 100_000
 list = [randstring(10) for i in 1:n_list];
 blocklist = list[1:n_blocklist];
