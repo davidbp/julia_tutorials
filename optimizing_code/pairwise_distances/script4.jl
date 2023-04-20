@@ -44,7 +44,7 @@ function main()
     
     println("\nExecution with $(nthreads()) threads\n")
         
-    display(@benchmark transform!($X, $centers, $assignments0))
+    display(@benchmark transform!($X, $centers, $assignments))
 end
 
 main()
